@@ -2,13 +2,13 @@ package sgreben.flbs;
 
 public class ConstResiduals implements Residuals {
 	
-	private int state;
+	private final int state;
 	
 	public ConstResiduals(int state) {
 		this.state = state;
 	}
 	
-	public int get(int i) {
+	public int get(int symbol) {
 		return state;
 	}
 	

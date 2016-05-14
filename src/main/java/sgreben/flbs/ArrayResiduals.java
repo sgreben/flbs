@@ -8,8 +8,8 @@ public class ArrayResiduals implements Residuals {
 		this.residuals = residuals;
 	}
 	
-	public int get(int ofSymbol) {
-		return residuals[ofSymbol];
+	public int get(int symbol) {
+		return residuals[symbol];
 	}
 	
 	public boolean isConst(int state) {

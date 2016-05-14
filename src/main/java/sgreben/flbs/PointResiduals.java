@@ -2,9 +2,9 @@ package sgreben.flbs;
 
 public class PointResiduals implements Residuals {
 	
-	private int state;
-	private int symbol;
-	private int defaultState;
+	private final int state;
+	private final int symbol;
+	private final int defaultState;
 	
 	public PointResiduals(int symbol, int state, int defaultState) {
 		this.symbol = symbol;
