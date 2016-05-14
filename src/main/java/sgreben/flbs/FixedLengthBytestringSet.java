@@ -119,8 +119,8 @@ public class FixedLengthBytestringSet {
 				);
 			}
 		}
-		int L_n_R = stateTable.make(new ArrayResiduals(residuals));
-		G.put(L, R, L_n_R);
-		return L_n_R;
+		int L_u_R = stateTable.make(new ArrayResiduals(residuals));
+		G.put(L, R, L_u_R);
+		return L_u_R;
 	}
 }
