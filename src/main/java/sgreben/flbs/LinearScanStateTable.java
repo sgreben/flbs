@@ -34,22 +34,22 @@ public class LinearScanStateTable implements StateTable {
 		if(residuals.isConst(ZERO)) {
 			return true;
 		}
-		try {
-			state(residuals);
-			return true;
-		} catch(StateNotFoundException e) {
-			return false;
-		}
+		int state = state(residuals);
+		return state >= 0;
 	}
 		
 	public int make(Residuals residuals) {
 		if(residuals.isConst(ZERO)) {
 			return ZERO;
 		}
-		try {
-			return state(residuals);
-		} catch(StateNotFoundException e) {
-			int state = size();
+		int state = state(residuals);
+		if(state >= 0) {
+			return state;
+		} else {
+			state = size();
+			/* if(state == Integer.MAX_VALUE) {
+				throw new MaximumStateNumberReachedException();
+			}*/
 			states.add(residuals);
 			return state;
 		}
@@ -63,7 +63,7 @@ public class LinearScanStateTable implements StateTable {
 		}
 	}
 	
-	private int state(Residuals residuals) throws StateNotFoundException {
+	private int state(Residuals residuals) {
 		final int N = size();
 		for(int i = 0; i < N; ++i) {
 			Residuals currentState = residuals(i);
@@ -78,6 +78,7 @@ public class LinearScanStateTable implements StateTable {
 				return i;
 			}
 		}
-		throw new StateNotFoundException();
+		return (-1);
+		//throw new StateNotFoundException();
 	}
 }
