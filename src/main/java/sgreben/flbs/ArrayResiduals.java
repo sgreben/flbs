@@ -8,4 +8,11 @@ public class ArrayResiduals implements Residuals {
 	public int get(int ofSymbol) {
 		return residuals[ofSymbol];
 	}
+	public boolean isConst(int state) {
+		for(int i = 0; i < residuals.length; ++i) {
+			if(residuals[i] != state) {
+				return false;
+			}
+		}
+	}
 }
