@@ -14,5 +14,6 @@ public class ArrayResiduals implements Residuals {
 				return false;
 			}
 		}
+		return true;
 	}
 }

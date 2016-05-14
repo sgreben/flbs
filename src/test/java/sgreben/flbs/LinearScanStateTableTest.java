@@ -4,6 +4,7 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 public class LinearScanStateTableTest {
+
 	private static Residuals R_Sigma() {
 		int[] R = new int[256];
 		for(int i = 0; i < 256; ++i) {
@@ -11,6 +12,7 @@ public class LinearScanStateTableTest {
 		}
 		return new ArrayResiduals(R);
 	}
+	
 	private static Residuals R_Zero() {
 		int[] R = new int[256];
 		for(int i = 0; i < 256; ++i) {
@@ -18,6 +20,7 @@ public class LinearScanStateTableTest {
 		}
 		return new ArrayResiduals(R);
 	}
+	
 	@Test
 	public void emptyLanguage_R_allSelfLoops() {
 		LinearScanStateTable st = new LinearScanStateTable();
@@ -26,6 +29,7 @@ public class LinearScanStateTableTest {
 			assertEquals(LinearScanStateTable.ZERO, R.get(i)); 
 		}
 	}
+	
 	@Test
 	public void epsilonLanguage_R_allEmptyLanguage() {
 		LinearScanStateTable st = new LinearScanStateTable();
@@ -34,6 +38,7 @@ public class LinearScanStateTableTest {
 			assertEquals(LinearScanStateTable.ZERO, R.get(i)); 
 		}
 	}
+	
 	@Test
 	public void emptyResiduals_make_returnsZero() {
 		LinearScanStateTable st = new LinearScanStateTable();
@@ -42,6 +47,7 @@ public class LinearScanStateTableTest {
 		int L = st.make(R);
 		assertEquals(LinearScanStateTable.ZERO, L);
 	}
+	
 	@Test
 	public void emptyTable_makeNew_resultExists() {
 		LinearScanStateTable st = new LinearScanStateTable();
@@ -54,6 +60,7 @@ public class LinearScanStateTableTest {
 		int L = st.make(Rr);
 		assertTrue(st.exists(Rr));
 	}
+	
 	@Test
 	public void emptyTable_makeNew_repeatedMakeReturnsSameState() {
 		LinearScanStateTable st = new LinearScanStateTable();
@@ -63,6 +70,7 @@ public class LinearScanStateTableTest {
 		int L_later = st.make(R);
 		assertEquals(L, L_later);
 	}
+	
 	@Test
 	public void emptyTableNewState_exists_isFalse() {
 		LinearScanStateTable st = new LinearScanStateTable();

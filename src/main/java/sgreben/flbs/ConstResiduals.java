@@ -8,7 +8,7 @@ public class ConstResiduals implements Residuals {
 	public int get(int i) {
 		return state;
 	}
-	public int isConst(int state) {
-		return state == this.state;
+	public boolean isConst(int state) {
+		return this.state == state;
 	}
 }
