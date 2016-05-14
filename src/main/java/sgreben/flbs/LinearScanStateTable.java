@@ -47,9 +47,6 @@ public class LinearScanStateTable implements StateTable {
 			return state;
 		} else {
 			state = size();
-			/* if(state == Integer.MAX_VALUE) {
-				throw new MaximumStateNumberReachedException();
-			}*/
 			states.add(residuals);
 			return state;
 		}
@@ -79,6 +76,5 @@ public class LinearScanStateTable implements StateTable {
 			}
 		}
 		return (-1);
-		//throw new StateNotFoundException();
 	}
 }
