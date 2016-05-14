@@ -6,13 +6,16 @@ public class LinearScanStateTable implements StateTable {
 	public static final int ZERO = Integer.MIN_VALUE;
 	public static final int EPSILON = ZERO + 1;
 	
-	private static final Residuals ZERO_RESIDUALS = 
-		new ConstResiduals(ZERO);
+	private static final Residuals ZERO_RESIDUALS = new ConstResiduals(ZERO);
 	
 	private ArrayList<Residuals> states;
 	                                        
 	public LinearScanStateTable() {
-		states = new ArrayList<Residuals>(256);
+		states = new ArrayList<Residuals>();
+	}
+	
+	public LinearScanStateTable(int expectedsize) {
+		states = new ArrayList<Residuals>(expectedsize);
 	}
 	
 	public int ZERO() {
@@ -23,11 +26,14 @@ public class LinearScanStateTable implements StateTable {
 		return EPSILON;
 	}
 	
-	public int numberOfStates() {
+	public int size() {
 		return states.size();
 	}
 
 	public boolean exists(Residuals residuals){
+		if(residuals.isConst(ZERO)) {
+			return true;
+		}
 		try {
 			state(residuals);
 			return true;
@@ -37,10 +43,13 @@ public class LinearScanStateTable implements StateTable {
 	}
 		
 	public int make(Residuals residuals) {
+		if(residuals.isConst(ZERO)) {
+			return ZERO;
+		}
 		try {
 			return state(residuals);
 		} catch(StateNotFoundException e) {
-			int state = numberOfStates();
+			int state = size();
 			states.add(residuals);
 			return state;
 		}
@@ -53,19 +62,9 @@ public class LinearScanStateTable implements StateTable {
 			return states.get(state);
 		}
 	}
-
+	
 	private int state(Residuals residuals) throws StateNotFoundException {
-		final int N = numberOfStates();
-		boolean allZero = true;
-		for(int j = 0; j < 256; ++j) {
-			if(residuals.get(j) != ZERO) {
-				allZero = false;
-				break;
-			}
-		}
-		if(allZero) {
-			return ZERO;
-		}
+		final int N = size();
 		for(int i = 0; i < N; ++i) {
 			Residuals currentState = residuals(i);
 			boolean different = false;
