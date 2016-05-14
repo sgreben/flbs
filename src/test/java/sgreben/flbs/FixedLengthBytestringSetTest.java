@@ -37,7 +37,7 @@ public class FixedLengthBytestringSetTest {
 		assertFalse(flbs.contains(Lw, word2));
 	}
 
-		@Test
+	@Test
 	public void unionOfTwoWords_resultContainsBoth() {
 		int Lw1 = flbs.singleton(word1);
 		int Lw2 = flbs.singleton(word2);
@@ -53,8 +53,7 @@ public class FixedLengthBytestringSetTest {
 		int Lw12 = flbs.union(Lw1, Lw2);
 		assertFalse(flbs.contains(Lw12, word3));
 	}
-
-
+	
 	@Test
 	public void singleton_intersectSelf_isSameState() {
 		int Lw = flbs.singleton(word1);
