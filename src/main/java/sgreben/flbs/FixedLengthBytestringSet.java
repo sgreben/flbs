@@ -31,10 +31,6 @@ public class FixedLengthBytestringSet {
 		return L == stateTable.EPSILON();
 	}
 	
-	public long size(int L) {
-		return 0;
-	}
-	
 	public int intersection(int L, int R) {
 		if(L == R) {
 			return L;
