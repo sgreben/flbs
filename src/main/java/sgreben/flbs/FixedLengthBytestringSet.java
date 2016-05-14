@@ -1,6 +1,7 @@
 package sgreben.flbs;
 
 import java.util.HashMap;
+import java.math.BigInteger;
 
 public class FixedLengthBytestringSet {
 	private StateTable stateTable;
@@ -19,16 +20,26 @@ public class FixedLengthBytestringSet {
 	}
 	
 	public int prefix(int L, byte[] symbols) {
-		int previousState = L;
+		int state = L;
 		for(int i = 0; i < symbols.length; ++i) {
 			int symbol = 128+(int)symbols[symbols.length - 1 - i];
-			previousState = stateTable.make(
-				new PointResiduals(symbol, previousState, ZERO)
+			state = stateTable.make(
+				new PointResiduals(symbol, state, ZERO)
 			);
 		}
-		return previousState;
+		return state;
 	}
-	
+
+	public int prefixPadding(int L, int length) {
+		int state = L;
+		for(int i = 0; i < length; ++i) {
+			state = stateTable.make(
+				new ConstResiduals(state)
+			);
+		}
+		return state;
+	}
+
 	public boolean contains(int L, byte[] word) {
 		if(word.length == 0) {
 			return L == EPSILON;
@@ -42,30 +53,30 @@ public class FixedLengthBytestringSet {
 		return L == EPSILON;
 	}
 
-	public long size(int L) {
-		HashMap<Integer, Long> G = new HashMap<Integer, Long>();
+	public BigInteger size(int L) {
+		HashMap<Integer, BigInteger> G = new HashMap<Integer, BigInteger>();
 		return sizeLoop(G, L);
 	}
 	
-	private long sizeLoop(HashMap<Integer, Long> G, int L) {
+	private BigInteger sizeLoop(HashMap<Integer, BigInteger> G, int L) {
 		if(L == ZERO) {
-			return 0;
+			return BigInteger.ZERO;
 		} 
 		if (L == EPSILON) {
-			return 1;
+			return BigInteger.ONE;
 		}
 		Integer Lbox = Integer.valueOf(L);
 		if(G.containsKey(Lbox)) {
 			return G.get(Lbox);
 		}
 		Residuals R = stateTable.residuals(L);
-		long size = 0L;
+		BigInteger size = BigInteger.ZERO;
 		for(int i = 0; i < 256; ++i) {
 			int Ri = R.get(i);
 			if(Ri == EPSILON) {
-				size += 1;
+				size = size.add(BigInteger.ONE);
 			} else if(Ri != ZERO) {
-				size += sizeLoop(G, Ri);
+				size = size.add(sizeLoop(G, Ri));
 			}
 		}
 		G.put(Lbox, size);
