@@ -179,8 +179,6 @@ public class FixedLengthBytestringSetTest {
 		assertFalse(iterator.hasNext());
 	}
 
-	
-
 	@Test
 	public void singleton_intersectSelf_isSameState() {
 		int Lw = flbs.singleton(word1);
