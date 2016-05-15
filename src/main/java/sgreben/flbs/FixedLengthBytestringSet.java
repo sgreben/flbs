@@ -58,6 +58,43 @@ public class FixedLengthBytestringSet {
 		return sizeLoop(G, L);
 	}
 	
+	public int length(int L) {
+		int length = 0;
+		while(true) {
+			if(L == EPSILON || L == ZERO) {
+				return length;
+			}
+			Residuals R = stateTable.residuals(L);
+			if(R.isConst(EPSILON)) {
+				return length + 1;
+			};
+			for(int i = 0; i < 256; ++i) {
+				int Ri = R.get(i);
+				if(Ri != ZERO) {
+					length += 1;
+					L = Ri;
+					break;
+				}
+			}
+		}
+	}
+	
+	public int intersection(int L, int R) {
+		if(L == R) {
+			return L;
+		}
+		IntPairMap G = new IntPairMap();
+		return intersectionLoop(G, Math.min(L, R), Math.max(L,R));
+	}
+
+	public int union(int L, int R) {
+		if(L == R) {
+			return L;
+		}
+		IntPairMap G = new IntPairMap();
+		return unionLoop(G, Math.min(L, R), Math.max(L,R));
+	}
+
 	private BigInteger sizeLoop(HashMap<Integer, BigInteger> G, int L) {
 		if(L == ZERO) {
 			return BigInteger.ZERO;
@@ -82,23 +119,6 @@ public class FixedLengthBytestringSet {
 		G.put(Lbox, size);
 		return size;
 	}
-
-	public int intersection(int L, int R) {
-		if(L == R) {
-			return L;
-		}
-		IntPairMap G = new IntPairMap();
-		return intersectionLoop(G, Math.min(L, R), Math.max(L,R));
-	}
-
-	public int union(int L, int R) {
-		if(L == R) {
-			return L;
-		}
-		IntPairMap G = new IntPairMap();
-		return unionLoop(G, Math.min(L, R), Math.max(L,R));
-	}
-	
 		
 	private int intersectionLoop(IntPairMap G, int L, int R) {
 		assert(L <= R);

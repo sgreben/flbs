@@ -15,4 +15,8 @@ public class ConstResiduals implements Residuals {
 	public boolean isConst(int state) {
 		return this.state == state;
 	}
+	
+	public Residuals compact() {
+		return this;
+	}
 }

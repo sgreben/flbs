@@ -2,13 +2,13 @@ package sgreben.flbs;
 
 public class StepResiduals implements Residuals {
 	
-	private final int leftState;
 	private final int rightStartSymbol;
+	private final int leftState;
 	private final int rightState;
 	
-	public StepResiduals(int leftState, int rightStartSymbol, int rightState) {
-		this.leftState = leftState;
+	public StepResiduals(int rightStartSymbol, int leftState, int rightState) {
 		this.rightStartSymbol = rightStartSymbol;
+		this.leftState = leftState;
 		this.rightState = rightState;
 	}
 	
@@ -25,5 +25,12 @@ public class StepResiduals implements Residuals {
 			this.leftState == state &&
 			(rightState == state || rightStartSymbol > 255)
 		);
+	}
+	
+	public Residuals compact() {
+		if(leftState == rightState || rightStartSymbol > 255) {
+			return new ConstResiduals(leftState);
+		}
+		return this;
 	}
 }

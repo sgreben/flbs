@@ -26,4 +26,11 @@ public class PointResiduals implements Residuals {
 			defaultState == state
 		);
 	}
+	
+	public Residuals compact() {
+		if(state == defaultState) {
+			return new ConstResiduals(state);
+		}
+		return this;
+	}
 }

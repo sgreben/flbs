@@ -26,21 +26,36 @@ public class FixedLengthBytestringSetTest {
 	}
 	
 	@Test
-	public void buildSingleton_resultContainsWord() {
+	public void singleton_containsWord() {
 		int Lw = flbs.singleton(word1);
 		assertTrue(flbs.contains(Lw, word1));
 	}
 
 	@Test
-	public void buildSingleton_sizeIs1() {
+	public void singleton_sizeIs1() {
 		int Lw = flbs.singleton(word1);
 		assertEquals(BigInteger.ONE, flbs.size(Lw));
 	}
 
 	@Test
-	public void buildSingleton_resultDoesNotContainDiffWord() {
+	public void singleton_doesNotContainDiffWord() {
 		int Lw = flbs.singleton(word1);
 		assertFalse(flbs.contains(Lw, word2));
+	}
+	
+	@Test
+	public void singleton_length_returnsLengthOfWord() {
+		int Lw = flbs.singleton(word1);
+		assertEquals(word1.length, flbs.length(Lw));
+	}
+	
+	@Test
+	public void unionOfTwoWords_length_returnsLengthOfWords() {
+		int Lw1 = flbs.singleton(word1);
+		int Lw2 = flbs.singleton(word2);
+		int Lw12 = flbs.union(Lw1, Lw2);
+		assertEquals(word1.length, flbs.length(Lw12));
+		assertEquals(word2.length, flbs.length(Lw12));
 	}
 
 	@Test
