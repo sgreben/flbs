@@ -1,6 +1,8 @@
 package sgreben.flbs;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.ArrayDeque;
 import java.math.BigInteger;
 
 public class FixedLengthBytestringSet {
@@ -53,9 +55,20 @@ public class FixedLengthBytestringSet {
 		return L == EPSILON;
 	}
 
-	public BigInteger size(int L) {
-		HashMap<Integer, BigInteger> G = new HashMap<Integer, BigInteger>();
-		return sizeLoop(G, L);
+	public int intersection(int L, int R) {
+		if(L == R) {
+			return L;
+		}
+		IntPairMap G = new IntPairMap();
+		return intersectionLoop(G, Math.min(L, R), Math.max(L,R));
+	}
+
+	public int union(int L, int R) {
+		if(L == R) {
+			return L;
+		}
+		IntPairMap G = new IntPairMap();
+		return unionLoop(G, Math.min(L, R), Math.max(L,R));
 	}
 	
 	public int length(int L) {
@@ -79,22 +92,66 @@ public class FixedLengthBytestringSet {
 		}
 	}
 	
-	public int intersection(int L, int R) {
-		if(L == R) {
-			return L;
-		}
-		IntPairMap G = new IntPairMap();
-		return intersectionLoop(G, Math.min(L, R), Math.max(L,R));
+	public Iterator<byte[]> iterate(int L) {
+		int length = length(L);
+		return new WordIterator(L, length); 
 	}
 
-	public int union(int L, int R) {
-		if(L == R) {
-			return L;
+	public BigInteger size(int L) {
+		HashMap<Integer, BigInteger> G = new HashMap<Integer, BigInteger>();
+		return sizeLoop(G, L);
+	}
+	
+	private class WordIterator implements Iterator<byte[]> {
+		private byte[] word;
+		private boolean isEpsilon;
+		private ArrayDeque<int[]> worklist;
+
+		public WordIterator(int state, int length) {
+			this.worklist = new ArrayDeque<int[]>(length);
+			this.word = new byte[length];
+			isEpsilon = state == EPSILON;
+			if(length > 0) {
+				Residuals R = stateTable.residuals(state);
+				for(int i = 0; i < 256; ++i) {
+					int Ri = R.get(i); 
+					if(Ri != ZERO) {
+						worklist.add(new int[]{ Ri, 0, i });
+					}
+				}
+			}
 		}
-		IntPairMap G = new IntPairMap();
-		return unionLoop(G, Math.min(L, R), Math.max(L,R));
+		
+		public boolean hasNext() {
+			return (worklist.size() > 0 || isEpsilon);
+		}
+		
+		public byte[] next() {
+			if(isEpsilon) {
+				isEpsilon = false;
+				return word;
+			}
+			while(true) {
+				int[] item = worklist.removeFirst();
+				int state = item[0];
+				int offset = item[1];
+				byte symbol = (byte)(item[2]-128);
+				word[offset] = symbol;
+				Residuals R = stateTable.residuals(state);
+				if(offset == word.length-1) {
+					return word;
+				}
+				for(int i = 0; i < 256; ++i) {
+					int Ri = R.get(i); 
+					if(Ri != ZERO) {
+						worklist.offerFirst(new int[]{ Ri, offset+1, i });
+					}
+				}
+			}
+		}
 	}
 
+		
 	private BigInteger sizeLoop(HashMap<Integer, BigInteger> G, int L) {
 		if(L == ZERO) {
 			return BigInteger.ZERO;
