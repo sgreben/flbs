@@ -1,6 +1,6 @@
 package sgreben.flbs;
 
-public class StepResiduals implements Residuals {
+public class StepResiduals extends ResidualsBase implements Residuals {
 	
 	private final int rightStartSymbol;
 	private final int leftState;
@@ -32,5 +32,10 @@ public class StepResiduals implements Residuals {
 			return new ConstResiduals(leftState);
 		}
 		return this;
+	}
+	
+	@Override
+	public int hashCode() {
+		return leftState ^ (rightState << 6) * (rightStartSymbol << 16);
 	}
 }

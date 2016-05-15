@@ -37,6 +37,12 @@ public class LinearScanStateTable implements StateTable {
 		int state = state(residuals);
 		return state >= 0;
 	}
+	
+	private int add(Residuals residuals) {
+		final int N = size();
+		states.add(residuals);
+		return N;
+	}
 		
 	public int make(Residuals residuals) {
 		if(residuals.isConst(ZERO)) {
@@ -46,9 +52,7 @@ public class LinearScanStateTable implements StateTable {
 		if(state >= 0) {
 			return state;
 		} else {
-			state = size();
-			states.add(residuals);
-			return state;
+			return add(residuals);
 		}
 	}
 

@@ -1,6 +1,6 @@
 package sgreben.flbs;
 
-public class ArrayResiduals implements Residuals {
+public class ArrayResiduals extends ResidualsBase implements Residuals {
 	
 	private final int[] residuals;
 	

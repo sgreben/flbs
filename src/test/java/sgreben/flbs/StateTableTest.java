@@ -5,14 +5,14 @@ import static org.junit.Assert.*;
 
 public abstract class StateTableTest {
 
-	LinearScanStateTable st;
-	int ZERO;
-	int EPSILON;
+	StateTable st;
+	static int ZERO;
+	static int EPSILON;
 	
 	public static Residuals R_Sigma() {
 		int[] R = new int[256];
 		for(int i = 0; i < 256; ++i) {
-			R[i] = LinearScanStateTable.EPSILON;
+			R[i] = EPSILON;
 		}
 		return new ArrayResiduals(R);
 	}
@@ -20,7 +20,7 @@ public abstract class StateTableTest {
 	public static Residuals R_Zero() {
 		int[] R = new int[256];
 		for(int i = 0; i < 256; ++i) {
-			R[i] = LinearScanStateTable.ZERO;
+			R[i] = ZERO;
 		}
 		return new ArrayResiduals(R);
 	}

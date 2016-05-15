@@ -1,6 +1,6 @@
 package sgreben.flbs;
 
-public class PointResiduals implements Residuals {
+public class PointResiduals extends ResidualsBase implements Residuals {
 	
 	private final int state;
 	private final int symbol;
@@ -32,5 +32,10 @@ public class PointResiduals implements Residuals {
 			return new ConstResiduals(state);
 		}
 		return this;
+	}
+	
+	@Override
+	public int hashCode() {
+		return state ^ (defaultState << 6) * (symbol << 16);
 	}
 }

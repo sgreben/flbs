@@ -1,6 +1,6 @@
 package sgreben.flbs;
 
-public class ConstResiduals implements Residuals {
+public class ConstResiduals extends ResidualsBase implements Residuals {
 	
 	private final int state;
 	
@@ -18,5 +18,10 @@ public class ConstResiduals implements Residuals {
 	
 	public Residuals compact() {
 		return this;
+	}
+	
+	@Override
+	public int hashCode() {
+		return state;
 	}
 }
