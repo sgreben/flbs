@@ -74,8 +74,11 @@ public class FixedLengthBytestringSet {
 	public int length(int L) {
 		int length = 0;
 		while(true) {
-			if(L == EPSILON || L == ZERO) {
+			if(L == EPSILON) {
 				return length;
+			}
+			if(L == ZERO) {
+				return 0;
 			}
 			Residuals R = stateTable.residuals(L);
 			if(R.isConst(EPSILON)) {
@@ -104,13 +107,13 @@ public class FixedLengthBytestringSet {
 	
 	private class WordIterator implements Iterator<byte[]> {
 		private byte[] word;
-		private boolean isEpsilon;
 		private ArrayDeque<int[]> worklist;
+		private boolean iterEpsilon;
 
 		public WordIterator(int state, int length) {
 			this.worklist = new ArrayDeque<int[]>(length);
 			this.word = new byte[length];
-			isEpsilon = state == EPSILON;
+			iterEpsilon = state == EPSILON;
 			if(length > 0) {
 				Residuals R = stateTable.residuals(state);
 				for(int i = 0; i < 256; ++i) {
@@ -123,12 +126,12 @@ public class FixedLengthBytestringSet {
 		}
 		
 		public boolean hasNext() {
-			return (worklist.size() > 0 || isEpsilon);
+			return worklist.size() > 0 || iterEpsilon;
 		}
 		
 		public byte[] next() {
-			if(isEpsilon) {
-				isEpsilon = false;
+			if(iterEpsilon) {
+				iterEpsilon = false;
 				return word;
 			}
 			while(true) {
@@ -142,7 +145,7 @@ public class FixedLengthBytestringSet {
 					return word;
 				}
 				for(int i = 0; i < 256; ++i) {
-					int Ri = R.get(i); 
+					int Ri = R.get(i);
 					if(Ri != ZERO) {
 						worklist.offerFirst(new int[]{ Ri, offset+1, i });
 					}
@@ -150,7 +153,6 @@ public class FixedLengthBytestringSet {
 			}
 		}
 	}
-
 		
 	private BigInteger sizeLoop(HashMap<Integer, BigInteger> G, int L) {
 		if(L == ZERO) {

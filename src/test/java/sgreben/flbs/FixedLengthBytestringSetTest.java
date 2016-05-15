@@ -9,9 +9,11 @@ import java.util.Iterator;
 import java.util.Arrays;
 
 public class FixedLengthBytestringSetTest {
+	
 	static byte[] word1 = new byte[]{0x1,0x2,0x3,0xF,0xE,0xD};
 	static byte[] word2 = new byte[]{0x1,0x2,0x3,0xF,0xF,0xF};
 	static byte[] word3 = new byte[]{0xF,0xF,0xF,0xF,0xF,0xF};
+	
 	StateTable stateTable;
 	FixedLengthBytestringSet flbs;
 	
