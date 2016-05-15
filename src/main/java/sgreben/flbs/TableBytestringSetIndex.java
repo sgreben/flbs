@@ -5,26 +5,26 @@ import java.util.Iterator;
 import java.util.ArrayDeque;
 import java.math.BigInteger;
 
-public class FixedLengthBytestringSet {
+public class TableBytestringSetIndex implements BytestringSetIndex {
 	private StateTable stateTable;
 	
 	private final int ZERO;
 	private final int EPSILON;
 	
-	public FixedLengthBytestringSet(StateTable stateTable) {
+	public TableBytestringSetIndex(StateTable stateTable) {
 		this.stateTable = stateTable;
 		this.ZERO = stateTable.ZERO();
 		this.EPSILON = stateTable.EPSILON();
 	}
 	
-	public int singleton(byte[] symbols) {
-		return prefix(EPSILON, symbols);
+	public int singleton(byte[] data) {
+		return prefix(EPSILON, data);
 	}
 	
-	public int prefix(int L, byte[] symbols) {
+	public int prefix(int L, byte[] data) {
 		int state = L;
-		for(int i = 0; i < symbols.length; ++i) {
-			int symbol = 128+(int)symbols[symbols.length - 1 - i];
+		for(int i = data.length-1; i >= 0; --i) {
+			int symbol = 128+(int)data[i];
 			state = stateTable.make(
 				new PointResiduals(symbol, state, ZERO)
 			);
@@ -41,13 +41,22 @@ public class FixedLengthBytestringSet {
 		}
 		return state;
 	}
-
-	public boolean contains(int L, byte[] word) {
-		if(word.length == 0) {
+	public int prefixPadding(int L, int length, byte symbol) {
+		int state = L;
+		int intSymbol = 128+(int)symbol;
+		for(int i = 0; i < length; ++i) {
+			state = stateTable.make(
+				new PointResiduals(intSymbol, state, ZERO)
+			);
+		}
+		return state;
+	}
+	public boolean contains(int L, byte[] data) {
+		if(data.length == 0) {
 			return L == EPSILON;
 		}
-		for(int i = 0; i < word.length; ++i) {
-			L = stateTable.residuals(L).get(128+(int)word[i]);
+		for(int i = 0; i < data.length; ++i) {
+			L = stateTable.residuals(L).get(128+(int)data[i]);
 			if(L == ZERO) {
 				return false;
 			}
@@ -97,7 +106,7 @@ public class FixedLengthBytestringSet {
 	
 	public Iterator<byte[]> iterate(int L) {
 		int length = length(L);
-		return new WordIterator(L, length); 
+		return new DataIterator(L, length); 
 	}
 
 	public BigInteger size(int L) {
@@ -105,20 +114,21 @@ public class FixedLengthBytestringSet {
 		return sizeLoop(G, L);
 	}
 	
-		private class WordIterator implements Iterator<byte[]> {
-		private byte[] word;
-		private ArrayDeque<int[]> worklist;
+	
+	private class DataIterator implements Iterator<byte[]> {
+		private byte[] data;
+		private ArrayDeque<int[]> stack;
 		private boolean iterEpsilon;
 
-		public WordIterator(int state, int length) {
-			this.worklist = new ArrayDeque<int[]>(length);
-			this.word = new byte[length];
-			iterEpsilon = state == EPSILON;
+		public DataIterator(int state, int length) {
+			this.stack = new ArrayDeque<int[]>(length);
+			this.data = new byte[length];
+			this.iterEpsilon = state == EPSILON;
 			if(length > 0) {
 				Residuals R = stateTable.residuals(state);
 				for(int i = 0; i < 256; ++i) {
 					if(R.get(i) != ZERO) {
-						worklist.offerFirst(new int[]{ state, 0, i });
+						stack.push(new int[]{ state, 0, i });
 						break;
 					}
 				}
@@ -126,36 +136,36 @@ public class FixedLengthBytestringSet {
 		}
 		
 		public boolean hasNext() {
-			return worklist.size() > 0 || iterEpsilon;
+			return stack.size() > 0 || iterEpsilon;
 		}
 		
 		public byte[] next() {
 			if(iterEpsilon) {
 				iterEpsilon = false;
-				return word;
+				return data;
 			}
 			while(true) {
-				int[] item = worklist.removeFirst();
+				int[] item = stack.pop();
 				int state = item[0];
-				int offset = item[1];
+				int dataIndex = item[1];
 				int symbol = item[2];
-				word[offset] = (byte)(symbol-128);
+				data[dataIndex] = (byte)(symbol-128);
 				Residuals R = stateTable.residuals(state);
 				for(int i = symbol+1; i < 256; ++i) {
 					if(R.get(i) != ZERO) {
 						item[2] = i;
-						worklist.offerFirst(item);
+						stack.push(item);
 						break;
 					}
 				}
-				if(offset == word.length-1) {
-					return word;
+				if(dataIndex == data.length-1) {
+					return data;
 				}
 				state = R.get(symbol);
 				R = stateTable.residuals(state);
 				for(int i = 0; i < 256; ++i) {
 					if(R.get(i) != ZERO) {
-						worklist.offerFirst(new int[]{ state, offset+1, i });
+						stack.push(new int[]{ state, dataIndex+1, i });
 						break;
 					}
 				}
@@ -163,7 +173,6 @@ public class FixedLengthBytestringSet {
 		}
 	}
 
-		
 	private BigInteger sizeLoop(HashMap<Integer, BigInteger> G, int L) {
 		if(L == ZERO) {
 			return BigInteger.ZERO;

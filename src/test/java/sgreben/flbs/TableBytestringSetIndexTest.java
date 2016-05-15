@@ -8,19 +8,28 @@ import java.math.BigInteger;
 import java.util.Iterator;
 import java.util.Arrays;
 
-public class FixedLengthBytestringSetTest {
+public class TableBytestringSetIndexTest {
 	
 	static byte[] word1 = new byte[]{0x1,0x2,0x3,0xF,0xE,0xD};
 	static byte[] word2 = new byte[]{0x1,0x2,0x3,0xF,0xF,0xF};
 	static byte[] word3 = new byte[]{0xF,0xF,0xF,0xF,0xF,0xF};
 	
+	static byte[] word1U = new byte[]{0x1,0x2,0x3};
+	static byte[] word1L = new byte[]{0xF,0xE,0xD};
+	
+	static byte[] word2U = new byte[]{0x1,0x2,0x3};
+	static byte[] word2L = new byte[]{0xF,0xF,0xF};
+	
+	static byte[] word3U = new byte[]{0xF,0xF,0xF};
+	static byte[] word3L = word3U;
+	
 	StateTable stateTable;
-	FixedLengthBytestringSet flbs;
+	TableBytestringSetIndex flbs;
 	
 	@Before
 	public void setup() {
 		stateTable = new LinearScanStateTable();
-		flbs = new FixedLengthBytestringSet(stateTable);
+		flbs = new TableBytestringSetIndex(stateTable);
 	}
 	
 	@Test
@@ -237,4 +246,14 @@ public class FixedLengthBytestringSetTest {
 		}
 		assertEquals(256*256, count);
 	}
+	
+	@Test
+	public void singletonThenPrefix_sameStateAsFullWord() {
+		int Lw1 = flbs.singleton(word1);
+		int Lw1L = flbs.singleton(word1L);
+		int Lw1_ = flbs.prefix(Lw1L, word1U);
+		System.out.println(stateTable.size());
+		assertEquals(Lw1, Lw1_);
+	}
+
 }
