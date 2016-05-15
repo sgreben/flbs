@@ -105,7 +105,7 @@ public class FixedLengthBytestringSet {
 		return sizeLoop(G, L);
 	}
 	
-	private class WordIterator implements Iterator<byte[]> {
+		private class WordIterator implements Iterator<byte[]> {
 		private byte[] word;
 		private ArrayDeque<int[]> worklist;
 		private boolean iterEpsilon;
@@ -117,9 +117,9 @@ public class FixedLengthBytestringSet {
 			if(length > 0) {
 				Residuals R = stateTable.residuals(state);
 				for(int i = 0; i < 256; ++i) {
-					int Ri = R.get(i); 
-					if(Ri != ZERO) {
-						worklist.add(new int[]{ Ri, 0, i });
+					if(R.get(i) != ZERO) {
+						worklist.offerFirst(new int[]{ state, 0, i });
+						break;
 					}
 				}
 			}
@@ -138,21 +138,31 @@ public class FixedLengthBytestringSet {
 				int[] item = worklist.removeFirst();
 				int state = item[0];
 				int offset = item[1];
-				byte symbol = (byte)(item[2]-128);
-				word[offset] = symbol;
+				int symbol = item[2];
+				word[offset] = (byte)(symbol-128);
 				Residuals R = stateTable.residuals(state);
+				for(int i = symbol+1; i < 256; ++i) {
+					if(R.get(i) != ZERO) {
+						item[2] = i;
+						worklist.offerFirst(item);
+						break;
+					}
+				}
 				if(offset == word.length-1) {
 					return word;
 				}
+				state = R.get(symbol);
+				R = stateTable.residuals(state);
 				for(int i = 0; i < 256; ++i) {
-					int Ri = R.get(i);
-					if(Ri != ZERO) {
-						worklist.offerFirst(new int[]{ Ri, offset+1, i });
+					if(R.get(i) != ZERO) {
+						worklist.offerFirst(new int[]{ state, offset+1, i });
+						break;
 					}
 				}
 			}
 		}
 	}
+
 		
 	private BigInteger sizeLoop(HashMap<Integer, BigInteger> G, int L) {
 		if(L == ZERO) {
