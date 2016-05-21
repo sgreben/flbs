@@ -5,13 +5,13 @@ import java.util.Iterator;
 import java.util.ArrayDeque;
 import java.math.BigInteger;
 
-public class TableBytestringSetIndex implements BytestringSetIndex {
+public class FsaBytestringSetIndex implements BytestringSetIndex {
 	private StateTable stateTable;
 	
 	private final int ZERO;
 	private final int EPSILON;
 	
-	public TableBytestringSetIndex(StateTable stateTable) {
+	public FsaBytestringSetIndex(StateTable stateTable) {
 		this.stateTable = stateTable;
 		this.ZERO = stateTable.ZERO();
 		this.EPSILON = stateTable.EPSILON();

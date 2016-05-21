@@ -5,6 +5,7 @@ public class ArrayResiduals extends ResidualsBase implements Residuals {
 	private final int[] residuals;
 	
 	public ArrayResiduals(int[] residuals) {
+		assert(residuals.length == 256);
 		this.residuals = residuals;
 	}
 	
@@ -13,7 +14,7 @@ public class ArrayResiduals extends ResidualsBase implements Residuals {
 	}
 	
 	public boolean isConst(int state) {
-		for(int i = 0; i < residuals.length; ++i) {
+		for(int i = 0; i < 256; ++i) {
 			if(residuals[i] != state) {
 				return false;
 			}

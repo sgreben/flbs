@@ -33,9 +33,4 @@ public class PointResiduals extends ResidualsBase implements Residuals {
 		}
 		return this;
 	}
-	
-	@Override
-	public int hashCode() {
-		return state ^ (defaultState << 6) * (symbol << 16);
-	}
 }

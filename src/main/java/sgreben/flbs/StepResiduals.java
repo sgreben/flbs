@@ -33,9 +33,4 @@ public class StepResiduals extends ResidualsBase implements Residuals {
 		}
 		return this;
 	}
-	
-	@Override
-	public int hashCode() {
-		return leftState ^ (rightState << 6) * (rightStartSymbol << 16);
-	}
 }

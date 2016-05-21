@@ -30,7 +30,7 @@ public class LinearScanStateTable implements StateTable {
 		return states.size();
 	}
 
-	public boolean exists(Residuals residuals){
+	public boolean exists(Residuals residuals) {
 		if(residuals.isConst(ZERO)) {
 			return true;
 		}

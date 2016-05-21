@@ -19,9 +19,4 @@ public class ConstResiduals extends ResidualsBase implements Residuals {
 	public Residuals compact() {
 		return this;
 	}
-	
-	@Override
-	public int hashCode() {
-		return state;
-	}
 }

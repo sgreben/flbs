@@ -8,7 +8,7 @@ import java.math.BigInteger;
 import java.util.Iterator;
 import java.util.Arrays;
 
-public class TableBytestringSetIndexTest {
+public class FsaBytestringSetIndexTest {
 	
 	static byte[] word1 = new byte[]{0x1,0x2,0x3,0xF,0xE,0xD};
 	static byte[] word2 = new byte[]{0x1,0x2,0x3,0xF,0xF,0xF};
@@ -24,12 +24,12 @@ public class TableBytestringSetIndexTest {
 	static byte[] word3L = word3U;
 	
 	StateTable stateTable;
-	TableBytestringSetIndex flbs;
+	FsaBytestringSetIndex flbs;
 	
 	@Before
 	public void setup() {
 		stateTable = new LinearScanStateTable();
-		flbs = new TableBytestringSetIndex(stateTable);
+		flbs = new FsaBytestringSetIndex(stateTable);
 	}
 	
 	@Test

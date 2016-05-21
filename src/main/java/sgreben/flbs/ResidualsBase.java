@@ -24,6 +24,7 @@ public abstract class ResidualsBase {
 		return h;
 	}
 	
+	@Override
 	public boolean equals(Object other) {
 		if(other instanceof Residuals) {
 			Residuals R = (Residuals) other;
