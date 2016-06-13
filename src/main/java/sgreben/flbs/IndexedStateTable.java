@@ -8,7 +8,7 @@ public class IndexedStateTable implements StateTable {
 	
 	public final int ZERO;
 	public final int EPSILON;
-	private HashMap<Residuals, Integer> residualsIndex;
+	private final HashMap<Residuals, Integer> residualsIndex;
 	
 	public IndexedStateTable() {
 		stateTable = new LinearScanStateTable();
@@ -52,6 +52,5 @@ public class IndexedStateTable implements StateTable {
 	
 	public boolean exists(Residuals residuals) {
 		return residualsIndex.containsKey(residuals);
-		// MAGIC!
 	}
 }
