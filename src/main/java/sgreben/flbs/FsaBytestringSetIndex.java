@@ -120,21 +120,32 @@ public class FsaBytestringSetIndex implements BytestringSetIndex {
 		return sizeLoop(G, L);
 	}
 	
-	
 	private class DataIterator implements Iterator<byte[]> {
+		
+		private class Item {
+			public final int state;
+			public final int dataIndex;
+			public int symbol;
+			public Item(int state, int dataIndex, int symbol) {
+				this.state = state;
+				this.dataIndex = dataIndex;
+				this.symbol = symbol;
+			}
+		}
+		
 		private byte[] data;
-		private ArrayDeque<int[]> stack;
+		private ArrayDeque<Item> stack;
 		private boolean iterEpsilon;
 
 		public DataIterator(int state, int length) {
-			this.stack = new ArrayDeque<int[]>(length);
+			this.stack = new ArrayDeque<Item>(length);
 			this.data = new byte[length];
 			this.iterEpsilon = state == EPSILON;
 			if(length > 0) {
 				Residuals R = stateTable.residuals(state);
 				for(int i = 0; i < 256; ++i) {
 					if(R.get(i) != ZERO) {
-						stack.push(new int[]{ state, 0, i });
+						stack.push(new Item(state, 0, i));
 						break;
 					}
 				}
@@ -151,15 +162,15 @@ public class FsaBytestringSetIndex implements BytestringSetIndex {
 				return data;
 			}
 			while(true) {
-				int[] item = stack.pop();
-				int state = item[0];
-				int dataIndex = item[1];
-				int symbol = item[2];
+				Item item = stack.pop();
+				int state = item.state;
+				int dataIndex = item.dataIndex;
+				int symbol = item.symbol;
 				data[dataIndex] = (byte)(symbol-128);
 				Residuals R = stateTable.residuals(state);
 				for(int i = symbol+1; i < 256; ++i) {
 					if(R.get(i) != ZERO) {
-						item[2] = i;
+						item.symbol = i;
 						stack.push(item);
 						break;
 					}
@@ -171,7 +182,7 @@ public class FsaBytestringSetIndex implements BytestringSetIndex {
 				R = stateTable.residuals(state);
 				for(int i = 0; i < 256; ++i) {
 					if(R.get(i) != ZERO) {
-						stack.push(new int[]{ state, dataIndex+1, i });
+						stack.push(new Item(state, dataIndex+1, i));
 						break;
 					}
 				}
