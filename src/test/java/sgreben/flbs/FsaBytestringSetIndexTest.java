@@ -268,6 +268,16 @@ public class FsaBytestringSetIndexTest {
 	}
 	
 	@Test
+	public void singleton_complement_intersectionWithSingleton_isZero() {
+		byte[] word = word1;
+		int length = word.length;
+		int Lw = flbs.singleton(word);
+		int Lw_comp = flbs.complement(Lw);
+		int Lw_n_Lw_comp = flbs.intersection(Lw, Lw_comp);
+		assertEquals(stateTable.ZERO(), Lw_n_Lw_comp);
+	}
+	
+	@Test
 	public void singleton_complement_complement_isSingleton() {
 		byte[] word = word4;
 		int length = word.length;
