@@ -10,7 +10,7 @@ interface BytestringSetIndex {
 	/** Find or build the intersection of the two given sets of same-length bytestrings.
 	 */
 	int intersection(int L, int R);
-	/** Find or build the union of the two given sets  of same-length bytestrings.
+	/** Find or build the union of the two given sets of same-length bytestrings.
 	 */
 	int union(int L, int R);
 	/** Find or build the fixed-length complement of the given set.
