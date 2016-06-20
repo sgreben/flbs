@@ -13,6 +13,9 @@ interface BytestringSetIndex {
 	/** Find or build the union of the two given sets  of same-length bytestrings.
 	 */
 	int union(int L, int R);
+	/** Find or build the fixed-length complement of the given set.
+	 */
+	int complement(int L);
 	
 	/** True iff the set L contains the given bytestring
 	 */

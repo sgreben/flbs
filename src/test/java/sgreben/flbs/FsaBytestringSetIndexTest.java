@@ -23,6 +23,8 @@ public class FsaBytestringSetIndexTest {
 	static byte[] word3U = new byte[]{0xF,0xF,0xF};
 	static byte[] word3L = word3U;
 	
+	static byte[] word4 = new byte[]{0xF,0xF};
+	
 	StateTable stateTable;
 	FsaBytestringSetIndex flbs;
 	
@@ -255,5 +257,34 @@ public class FsaBytestringSetIndexTest {
 		System.out.println(stateTable.size());
 		assertEquals(Lw1, Lw1_);
 	}
-
+	
+	@Test
+	public void singleton_complement_doesNotContainWord() {
+		byte[] word = word4;
+		int length = word.length;
+		int Lw = flbs.singleton(word);
+		int Lw_comp = flbs.complement(Lw);
+		assertFalse(flbs.contains(Lw_comp, word));
+	}
+	
+	@Test
+	public void singleton_complement_complement_isSingleton() {
+		byte[] word = word4;
+		int length = word.length;
+		int Lw = flbs.singleton(word);
+		int Lw_comp = flbs.complement(Lw);
+		int Lw_comp_comp = flbs.complement(Lw_comp);
+		assertEquals(Lw, Lw_comp_comp);
+	}
+	
+	@Test
+	public void singleton_complement_sizeIs256powNMinusOne() {
+		int length = word4.length;
+		int Lw = flbs.singleton(word4);
+		// (2^length) - 1
+		BigInteger expectedComplementSize = 
+			BigInteger.valueOf(256).pow(length).subtract(BigInteger.ONE);
+		int Lw_comp = flbs.complement(Lw);
+		assertEquals(expectedComplementSize, flbs.size(Lw_comp));
+	}
 }

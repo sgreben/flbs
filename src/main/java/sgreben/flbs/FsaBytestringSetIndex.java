@@ -80,6 +80,12 @@ public class FsaBytestringSetIndex implements BytestringSetIndex {
 		return unionLoop(G, Math.min(L, R), Math.max(L,R));
 	}
 	
+	public int complement(int L) {
+		int length = length(L);
+		IntPairMap G = new IntPairMap();
+		return complementLoop(length, G, L);
+	}
+	
 	public int length(int L) {
 		int length = 0;
 		while(true) {
@@ -269,5 +275,26 @@ public class FsaBytestringSetIndex implements BytestringSetIndex {
 		int L_u_R = stateTable.make(new ArrayResiduals(residuals));
 		G.put(L, R, L_u_R);
 		return L_u_R;
+	}
+	
+	private int complementLoop(int length, IntPairMap G, int L) {
+		if(G.containsKey(length, L)) {
+			return G.get(length, L);
+		}
+		if(length == 0 && L == ZERO) {
+			return EPSILON;
+		}
+		if(length == 0 && L == EPSILON) {
+			return ZERO;
+		}
+		// length >= 1
+		Residuals R = stateTable.residuals(L);
+		int[] Rcomp = new int[256];
+		for(int i = 0; i < 256; ++i) {
+			Rcomp[i] = complementLoop(length - 1, G, R.get(i)); 
+		}
+		int Lcomp = stateTable.make(new ArrayResiduals(Rcomp));
+		G.put(length, L, Lcomp);
+		return Lcomp;
 	}
 }
