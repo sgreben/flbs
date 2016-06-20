@@ -12,7 +12,7 @@ public class IntPairMap {
 		
 		@Override
 		public boolean equals(Object o) {
-			if(!(o instanceof IntPair)) {
+			if(o.getClass() != IntPair.class) {
 				return false;
 			}
 			IntPair other = (IntPair)o;
