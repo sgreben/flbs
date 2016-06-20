@@ -41,16 +41,22 @@ public class IndexedStateTable implements StateTable {
 	}
 
 	public int make(Residuals residuals) {
+		if(residuals.isConst(ZERO)) {
+			return ZERO;
+		}
 		if(residualsIndex.containsKey(residuals)) {
 			return residualsIndex.get(residuals);
 		} else {
-			int state = stateTable.make(residuals);
+			int state = stateTable.add(residuals);
 			residualsIndex.put(residuals, Integer.valueOf(state));
 			return state;
 		}
 	}
 	
 	public boolean exists(Residuals residuals) {
+		if(residuals.isConst(ZERO)) {
+			return true;
+		}
 		return residualsIndex.containsKey(residuals);
 	}
 }
