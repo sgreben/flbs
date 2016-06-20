@@ -51,6 +51,16 @@ public class FsaBytestringSetIndex implements BytestringSetIndex {
 		}
 		return state;
 	}
+
+	public int suffix(int L, byte[] data) {
+		int state = L;
+		for(int i = 0; i < data.length && state != ZERO; ++i) {
+			Residuals R = stateTable.residuals(state);
+			state = R.get(128+(int)data[i]);
+		}
+		return state;
+	}
+
 	public boolean contains(int L, byte[] data) {
 		if(data.length == 0) {
 			return L == EPSILON;

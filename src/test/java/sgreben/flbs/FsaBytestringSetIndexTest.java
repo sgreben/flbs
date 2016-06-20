@@ -254,10 +254,17 @@ public class FsaBytestringSetIndexTest {
 		int Lw1 = flbs.singleton(word1);
 		int Lw1L = flbs.singleton(word1L);
 		int Lw1_ = flbs.prefix(Lw1L, word1U);
-		System.out.println(stateTable.size());
 		assertEquals(Lw1, Lw1_);
 	}
-	
+
+	@Test
+	public void singletonThenPrefix_findSuffix_returnsMiddle() {
+		int Lw1 = flbs.singleton(word1);
+		int Lw1L = flbs.singleton(word1L);
+		int Lw1L_ = flbs.suffix(Lw1, word1U);
+		assertEquals(Lw1L, Lw1L_);
+	}
+
 	@Test
 	public void singleton_complement_doesNotContainWord() {
 		byte[] word = word4;

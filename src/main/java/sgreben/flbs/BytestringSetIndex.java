@@ -34,6 +34,9 @@ interface BytestringSetIndex {
 	/** Find or build the set of bytestrings from L prefixed by the given byte[].
 	 */
 	int prefix(int L, byte[] data);
+	/** Find or build the set of suffixes of L starting with the given byte[].
+	 */
+	int suffix(int L, byte[] data);
 	/** Find or build the set of bytestrings from L prefixed by [length] copies of the given [symbol].
 	 */
 	int prefixPadding(int L, int length, byte symbol);
