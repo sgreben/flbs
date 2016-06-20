@@ -38,7 +38,7 @@ public class LinearScanStateTable implements StateTable {
 		return state >= 0;
 	}
 	
-	private int add(Residuals residuals) {
+	int add(Residuals residuals) {
 		final int N = size();
 		states.add(residuals);
 		return N;
@@ -67,15 +67,7 @@ public class LinearScanStateTable implements StateTable {
 	private int state(Residuals residuals) {
 		final int N = size();
 		for(int i = 0; i < N; ++i) {
-			Residuals currentState = residuals(i);
-			boolean different = false;
-			for(int j = 0; j < 256; ++j) {
-				if(residuals.get(j) != currentState.get(j)) {
-					different = true;
-					break;
-				}
-			}
-			if(!different) {
+			if(residuals.equals(residuals(i))) {
 				return i;
 			}
 		}
