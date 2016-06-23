@@ -13,7 +13,7 @@ public abstract class ResidualsBase {
 		for(int i = 0; i < 256; i++) {
 			int k = get(i);
 			k *= m;
-			k ^=  k >> r;
+			k ^= k >> r;
 			k *= m;
 			h *= m;
 			h ^= k;
