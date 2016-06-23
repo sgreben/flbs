@@ -79,7 +79,7 @@ public class FsaBytestringSetIndex implements BytestringSetIndex {
 			return L;
 		}
 		IntPairMap G = new IntPairMap();
-		return intersectionLoop(G, Math.min(L, R), Math.max(L,R));
+		return intersection(G, Math.min(L, R), Math.max(L,R));
 	}
 
 	public int union(int L, int R) {
@@ -87,13 +87,13 @@ public class FsaBytestringSetIndex implements BytestringSetIndex {
 			return L;
 		}
 		IntPairMap G = new IntPairMap();
-		return unionLoop(G, Math.min(L, R), Math.max(L,R));
+		return union(G, Math.min(L, R), Math.max(L,R));
 	}
 	
 	public int complement(int L) {
 		int length = length(L);
 		IntPairMap G = new IntPairMap();
-		return complementLoop(length, G, L);
+		return complement(length, G, L);
 	}
 	
 	public int length(int L) {
@@ -127,7 +127,7 @@ public class FsaBytestringSetIndex implements BytestringSetIndex {
 
 	public BigInteger size(int L) {
 		HashMap<Integer, BigInteger> G = new HashMap<Integer, BigInteger>();
-		return sizeLoop(G, L);
+		return size(G, L);
 	}
 	
 	private class DataIterator implements Iterator<byte[]> {
@@ -200,7 +200,7 @@ public class FsaBytestringSetIndex implements BytestringSetIndex {
 		}
 	}
 
-	private BigInteger sizeLoop(HashMap<Integer, BigInteger> G, int L) {
+	private BigInteger size(HashMap<Integer, BigInteger> G, int L) {
 		if(L == ZERO) {
 			return BigInteger.ZERO;
 		} 
@@ -218,14 +218,14 @@ public class FsaBytestringSetIndex implements BytestringSetIndex {
 			if(Ri == EPSILON) {
 				size = size.add(BigInteger.ONE);
 			} else if(Ri != ZERO) {
-				size = size.add(sizeLoop(G, Ri));
+				size = size.add(size(G, Ri));
 			}
 		}
 		G.put(Lbox, size);
 		return size;
 	}
 		
-	private int intersectionLoop(IntPairMap G, int L, int R) {
+	private int intersection(IntPairMap G, int L, int R) {
 		assert(L <= R);
 		if(L == R) {
 			return L;
@@ -247,7 +247,7 @@ public class FsaBytestringSetIndex implements BytestringSetIndex {
 			} else if(succL == ZERO || succR == ZERO) {
 				residuals[i] = ZERO;
 			} else {
-				residuals[i] = intersectionLoop(
+				residuals[i] = intersection(
 					G,
 					Math.min(succL, succR),
 					Math.max(succL, succR)
@@ -259,7 +259,7 @@ public class FsaBytestringSetIndex implements BytestringSetIndex {
 		return L_n_R;
 	}
 	
-	private int unionLoop(IntPairMap G, int L, int R) {
+	private int union(IntPairMap G, int L, int R) {
 		assert(L <= R);
 		if(L == R) {
 			return L;
@@ -286,7 +286,7 @@ public class FsaBytestringSetIndex implements BytestringSetIndex {
 			} else if(succR == ZERO) {
 				residuals[i] = succL;
 			} else {
-				residuals[i] = unionLoop(
+				residuals[i] = union(
 					G,
 					Math.min(succL, succR),
 					Math.max(succL, succR)
@@ -298,7 +298,7 @@ public class FsaBytestringSetIndex implements BytestringSetIndex {
 		return L_u_R;
 	}
 	
-	private int complementLoop(int length, IntPairMap G, int L) {
+	private int complement(int length, IntPairMap G, int L) {
 		if(G.containsKey(length, L)) {
 			return G.get(length, L);
 		}
@@ -312,7 +312,7 @@ public class FsaBytestringSetIndex implements BytestringSetIndex {
 		Residuals R = stateTable.residuals(L);
 		int[] Rcomp = new int[256];
 		for(int i = 0; i < 256; ++i) {
-			Rcomp[i] = complementLoop(length - 1, G, R.get(i)); 
+			Rcomp[i] = complement(length - 1, G, R.get(i)); 
 		}
 		int Lcomp = stateTable.make(new ArrayResiduals(Rcomp));
 		G.put(length, L, Lcomp);
