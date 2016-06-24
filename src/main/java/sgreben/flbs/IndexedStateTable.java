@@ -17,13 +17,6 @@ public class IndexedStateTable implements StateTable {
 		EPSILON = stateTable.EPSILON();
 	}
 	
-	public IndexedStateTable(int expectedsize) {
-		stateTable = new LinearScanStateTable(expectedsize);
-		residualsIndex = new HashMap<Residuals, Integer>(expectedsize);
-		ZERO = stateTable.ZERO();
-		EPSILON = stateTable.EPSILON();
-	}
-	
 	public int ZERO() {
 		return ZERO;
 	}
