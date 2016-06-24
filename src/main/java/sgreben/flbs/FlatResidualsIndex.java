@@ -29,11 +29,13 @@ public class FlatResidualsIndex {
 
 	public int get(int[] residuals) {
 		int h = hashIndex(residualsHash(residuals, 0));
-		for(int i = 0; i < numEntrySlots && getOccupiedFlag(h); ++i) {
+		for(int i = 0; i < numEntrySlots && getOccupiedFlag(h); ++i, ++h) {
+			if(h > numEntrySlots) {
+				h = 0;
+			}
 			if(equalResiduals(h, residuals, 0)) {
 				return getState(h);
 			}
-			h = hashIndex(h + 1);
 		}
 		return -1;
 	}
@@ -46,11 +48,14 @@ public class FlatResidualsIndex {
 		checkResize();
 		int h = hashIndex(residualsHash(residuals, residualsOffset));
 		while(getOccupiedFlag(h)) {
+			if(h > numEntrySlots) {
+				h = 0;
+			}
 			if(equalResiduals(h, residuals, residualsOffset)) {
 				table[entryOffset(h) + STATE_OFFSET] = state;
 				return;
 			}
-			h = hashIndex(h + 1);
+			++h;
 		}
 		setEntry(h, residuals, residualsOffset, state);
 		++numEntries;
