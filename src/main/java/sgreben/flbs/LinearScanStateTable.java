@@ -14,10 +14,6 @@ public class LinearScanStateTable implements StateTable {
 		states = new ArrayList<Residuals>();
 	}
 	
-	public LinearScanStateTable(int expectedsize) {
-		states = new ArrayList<Residuals>(expectedsize);
-	}
-	
 	public int ZERO() {
 		return ZERO;
 	}
