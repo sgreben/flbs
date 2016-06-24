@@ -17,6 +17,14 @@ public class FsaBytestringSetIndex implements BytestringSetIndex {
 		this.EPSILON = stateTable.EPSILON();
 	}
 	
+	public int emptySet() {
+		return ZERO;
+	}
+	
+	public int singletonEmpty() {
+		return EPSILON;
+	}
+	
 	public int singleton(byte[] data) {
 		return prefix(EPSILON, data);
 	}
@@ -106,9 +114,6 @@ public class FsaBytestringSetIndex implements BytestringSetIndex {
 				return 0;
 			}
 			Residuals R = stateTable.residuals(L);
-			if(R.isConst(EPSILON)) {
-				return length + 1;
-			};
 			for(int i = 0; i < 256; ++i) {
 				int Ri = R.get(i);
 				if(Ri != ZERO) {

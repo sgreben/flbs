@@ -4,6 +4,15 @@ import java.util.Iterator;
 import java.math.BigInteger;
 
 interface BytestringSetIndex {
+	
+	/** Return the empty set
+	*/
+	int emptySet();
+	
+	/** Return the set containing the empty bytestring.
+	*/
+	int singletonEmpty();
+	
 	/** Find or build a singleton set containing the given bytestring
 	 */
 	int singleton(byte[] data);
