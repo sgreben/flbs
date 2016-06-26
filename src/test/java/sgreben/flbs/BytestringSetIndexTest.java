@@ -49,6 +49,8 @@ public abstract class BytestringSetIndexTest {
 		int Lw = flbs.unionSingleton(Lw1, word2);
 		assertTrue(flbs.contains(Lw, word1));
 		assertTrue(flbs.contains(Lw, word2));
+		assertFalse(flbs.contains(Lw, word3));
+		assertFalse(flbs.contains(Lw, word4));
 	}
 	
 	@Test

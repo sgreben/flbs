@@ -115,6 +115,19 @@ public class FlatIndexedStateTable {
 		}
 	}
 	
+	public void get(int state, int[] residuals) {
+		if(state == ZERO || state == EPSILON) {
+			for(int i = 0; i < 256; ++i) {
+				residuals[i] = ZERO;
+			}
+		} else {
+			int stateOffset = stateOffset(state);
+			for(int i = 0; i < 256; ++i, ++stateOffset) {
+				residuals[i] = states[stateOffset];
+			}
+		}
+	}
+	
 	private int state(int[] residuals) {
 		return index.get(residuals);
 	}
