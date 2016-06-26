@@ -24,13 +24,9 @@ public class ArrayResiduals extends ResidualsBase implements Residuals {
 	
 	public Residuals compact() {
 		int r0 = residuals[0];
-		// const?
 		if(isConst(r0)) {
 			return new ConstResiduals(r0);
 		}
-		// point?
-		// step?
-		// interval?
 		return this;
 	}
 }
