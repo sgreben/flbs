@@ -264,6 +264,23 @@ public class FsaBytestringSetIndex implements BytestringSetIndex {
 		return L_n_R;
 	}
 	
+	public int unionSingleton(int L, byte[] word) {
+		return unionSingleton(L, word, 0);
+	}
+	
+	private int unionSingleton(int L, byte[] word, int offset) {
+		if(offset == word.length) {
+			return union(L, EPSILON); 
+		}
+		int symbol = 128+(int)word[offset];
+		int[] residuals = new int[256];
+		for(int i = 0; i < 256; ++i) {
+			residuals[i] = stateTable.residuals(L).get(i);
+		}
+		residuals[symbol] = unionSingleton(stateTable.residuals(L).get(symbol), word, offset + 1);
+		return stateTable.make(new ArrayResiduals(residuals));
+	}
+	
 	private int union(IntPairMap G, int L, int R) {
 		assert(L <= R);
 		if(L == R) {

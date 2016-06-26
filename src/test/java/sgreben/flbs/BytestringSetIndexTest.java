@@ -37,6 +37,21 @@ public abstract class BytestringSetIndexTest {
 	}
 	
 	@Test
+	public void unionSingleton_sameWord_isSameState() {
+		int Lw = flbs.singleton(word1);
+		int Lw2 = flbs.unionSingleton(Lw, word1);
+		assertEquals(Lw, Lw2);
+	}
+	
+	@Test
+	public void unionSingleton_containsBothWords() {
+		int Lw1 = flbs.singleton(word1);
+		int Lw = flbs.unionSingleton(Lw1, word2);
+		assertTrue(flbs.contains(Lw, word1));
+		assertTrue(flbs.contains(Lw, word2));
+	}
+	
+	@Test
 	public void singleton_containsWord() {
 		int Lw = flbs.singleton(word1);
 		assertTrue(flbs.contains(Lw, word1));
