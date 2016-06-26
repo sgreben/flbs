@@ -62,6 +62,13 @@ public class BytestringSetIndexBenchmarks {
 		}
 	}
 	
+	private void UnionSingleton1024Words(BytestringSetIndex bsi) {
+		int L = bsi.emptySet();
+		for(int i = 0; i < 1024; ++i) {
+			L = bsi.unionSingleton(L, words[i]);
+		}
+	}
+	
 	@Benchmark
 	public void Union1024Words_FlatFSA(BenchmarkState state) {
 		Union1024Words(state.flatFsa);
@@ -70,6 +77,16 @@ public class BytestringSetIndexBenchmarks {
 	@Benchmark
 	public void Union1024Words_DeepFSA(BenchmarkState state) {
 		Union1024Words(state.deepFsa);
+	}
+	
+	@Benchmark
+	public void UnionSingleton1024Words_FlatFSA(BenchmarkState state) {
+		UnionSingleton1024Words(state.flatFsa);
+	}
+	
+	@Benchmark
+	public void UnionSingleton1024Words_DeepFSA(BenchmarkState state) {
+		UnionSingleton1024Words(state.deepFsa);
 	}
 
 }
