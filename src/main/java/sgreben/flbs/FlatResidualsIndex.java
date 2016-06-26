@@ -1,5 +1,7 @@
 package sgreben.flbs;
 
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
 public class FlatResidualsIndex {
 	
 	private static final int INTS_PER_ENTRY = 256 + 1 + 1;
@@ -8,8 +10,9 @@ public class FlatResidualsIndex {
 	private static final int RESIDUALS_OFFSET = 2;
 	
 	private int[] table;
-	private int numEntries;
+	private volatile int numEntries;
 	private int numEntrySlots;
+	private ReentrantReadWriteLock lock;
 	private final double loadFactor;
 	
 	public FlatResidualsIndex(int initialSize, double loadFactor) {
@@ -17,6 +20,7 @@ public class FlatResidualsIndex {
 		this.loadFactor = loadFactor;
 		this.table = new int[numEntrySlots * INTS_PER_ENTRY];
 		this.numEntries = 0;
+		this.lock = new ReentrantReadWriteLock();
 	}
 
 	public int size() {
@@ -28,37 +32,53 @@ public class FlatResidualsIndex {
 	}
 
 	public int get(int[] residuals) {
-		int h = hashIndex(residualsHash(residuals, 0));
-		for(int i = 0; i < numEntrySlots && getOccupiedFlag(h); ++i, ++h) {
-			if(h > numEntrySlots) {
-				h = 0;
+		lock.readLock().lock();
+		try {
+			int h = hashIndex(residualsHash(residuals, 0));
+			for(int i = 0; i < numEntrySlots && getOccupiedFlag(h); ++i, ++h) {
+				if(h > numEntrySlots) {
+					h = 0;
+				}
+				if(equalResiduals(h, residuals, 0)) {
+					return getState(h);
+				}
 			}
-			if(equalResiduals(h, residuals, 0)) {
-				return getState(h);
-			}
+			return -1;
+		} finally {
+			lock.readLock().unlock();
 		}
-		return -1;
 	}
 
 	public void put(int[] residuals, int state) {
 		put(residuals, 0, state);
 	}
-	
 	private void put(int[] residuals, int residualsOffset, int state) {
-		checkResize();
-		int h = hashIndex(residualsHash(residuals, residualsOffset));
-		while(getOccupiedFlag(h)) {
-			if(h > numEntrySlots) {
-				h = 0;
+		lock.writeLock().lock();
+		try { 
+			if(numEntries >= loadFactor * numEntrySlots) {
+				resize();
 			}
-			if(equalResiduals(h, residuals, residualsOffset)) {
-				table[entryOffset(h) + STATE_OFFSET] = state;
-				return;
-			}
-			++h;
+		} finally {
+			lock.writeLock().unlock();
 		}
-		setEntry(h, residuals, residualsOffset, state);
-		++numEntries;
+		lock.writeLock().lock();
+		try {
+			int h = hashIndex(residualsHash(residuals, residualsOffset));
+			while(getOccupiedFlag(h)) {
+				if(h > numEntrySlots) {
+					h = 0;
+				}
+				if(equalResiduals(h, residuals, residualsOffset)) {
+					table[entryOffset(h) + STATE_OFFSET] = state;
+					return;
+				}
+				++h;
+			}
+			setEntry(h, residuals, residualsOffset, state);
+			++numEntries;
+		} finally {
+			lock.writeLock().unlock();
+		}
 	}
 	
 	private boolean getOccupiedFlag(int hash) {
@@ -100,14 +120,8 @@ public class FlatResidualsIndex {
 		}
 		return hash * INTS_PER_ENTRY;
 	}
-
-	private void checkResize() {
-		if(numEntries >= loadFactor * numEntrySlots) {
-			resize();
-		}
-	}
 	
-	private synchronized void resize() {
+	private void resize() {
 		final int[] oldTable = table;
 		numEntrySlots = numEntrySlots * 2;
 		table = new int[oldTable.length * 2];
