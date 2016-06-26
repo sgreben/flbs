@@ -150,6 +150,10 @@ public class FlatFsaBytestringSetIndex implements BytestringSetIndex {
 		return size(G, L);
 	}
 	
+	public int unionSingleton(int L, byte[] word) {
+		return unionSingleton(L, word, 0);
+	}
+	
 	private class DataIterator implements Iterator<byte[]> {
 		
 		private class Item {
@@ -329,4 +333,26 @@ public class FlatFsaBytestringSetIndex implements BytestringSetIndex {
 		G.put(length, L, Lcomp);
 		return Lcomp;
 	}
+	
+	private int unionSingleton(int L, byte[] word, int offset) {
+		if(offset == word.length) {
+			return EPSILON; 
+		}
+		int symbol = 128+(int)word[offset];
+		int state = unionSingleton(
+			stateTable.get(L, symbol), 
+			word, 
+			offset + 1
+		);
+		for(int i = 0; i < symbol; ++i) {
+			scratch[i] = stateTable.get(L, i);
+		}
+		scratch[symbol] = state;
+		for(int i = symbol + 1; i < 256; ++i) {
+			scratch[i] = stateTable.get(L, i);
+		}
+		return stateTable.make(scratch);
+	}
+	
+
 }

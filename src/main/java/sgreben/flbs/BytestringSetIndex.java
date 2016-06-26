@@ -16,6 +16,12 @@ interface BytestringSetIndex {
 	/** Find or build a singleton set containing the given bytestring
 	 */
 	int singleton(byte[] data);
+
+	/** Add a single byte string to a set. 
+		Returns the same state as union(L, singleton(data)), but avoids constructing
+		the intermediate set singleton(data).
+	 */
+	int unionSingleton(int L, byte[] data);
 	
 	/** Find or build the intersection of the two given sets of same-length bytestrings.
 	 */

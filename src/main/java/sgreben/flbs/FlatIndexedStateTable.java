@@ -20,7 +20,7 @@ public class FlatIndexedStateTable {
 	public FlatIndexedStateTable() {
 		numStates = 0;
 		states = new int[INTS_PER_STATE * INITIAL_SIZE];
-		index = new FlatResidualsIndex(INITIAL_SIZE, 0.75);
+		index = new FlatResidualsIndex(INITIAL_SIZE, 0.5);
 	}
 	
 	private static final int stateOffset(int state) {
@@ -33,7 +33,7 @@ public class FlatIndexedStateTable {
 		}
 	}
 	
-	private synchronized void resize() {
+	private void resize() {
 		final int[] oldStates = states;
 		final int N = oldStates.length;
 		states = new int[2 * N];
