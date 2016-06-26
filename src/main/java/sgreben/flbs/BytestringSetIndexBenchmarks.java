@@ -15,6 +15,14 @@ Benchmark                                             Mode  Cnt    Score   Error
 BytestringSetIndexBenchmarks.Union1024Words_DeepFSA  thrpt   20  123.632 ± 0.641  ops/s
 BytestringSetIndexBenchmarks.Union1024Words_FlatFSA  thrpt   20  240.107 ± 3.867  ops/s
 
+# Run complete. Total time: 00:02:43
+
+Benchmark                                                      Mode  Cnt    Score   Error  Units
+BytestringSetIndexBenchmarks.Union1024Words_DeepFSA           thrpt   20  155.123 ± 1.783  ops/s
+BytestringSetIndexBenchmarks.Union1024Words_FlatFSA           thrpt   20  248.958 ± 2.010  ops/s
+BytestringSetIndexBenchmarks.UnionSingleton1024Words_DeepFSA  thrpt   20  187.807 ± 1.395  ops/s
+BytestringSetIndexBenchmarks.UnionSingleton1024Words_FlatFSA  thrpt   20  285.303 ± 2.639  ops/s
+
 */
 
 import org.openjdk.jmh.annotations.Benchmark;
