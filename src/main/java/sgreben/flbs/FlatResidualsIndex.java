@@ -10,8 +10,8 @@ public class FlatResidualsIndex {
 	private static final int RESIDUALS_OFFSET = 2;
 	
 	private int[] table;
-	private volatile int numEntries;
 	private int numEntrySlots;
+	private volatile int numEntries;
 	private ReentrantReadWriteLock lock;
 	private final double loadFactor;
 	

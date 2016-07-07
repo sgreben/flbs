@@ -3,6 +3,7 @@ package sgreben.flbs;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.math.BigInteger;
 
 public class FlatFsaBytestringSetIndex implements BytestringSetIndex {
@@ -113,7 +114,26 @@ public class FlatFsaBytestringSetIndex implements BytestringSetIndex {
 		IntPairMap G = new IntPairMap();
 		return union(G, Math.min(L, R), Math.max(L,R));
 	}
+
+	public int unionSingleton(int L, byte[] word) {
+		final int N = word.length;
+		final int[] Lstates = new int[N];
+		for(int i = 0; i < N; ++i) {
+			Lstates[i] = L;
+			int symbol = 128+(int)word[i];
+			L = stateTable.get(L, symbol);
+		}
+		int state = EPSILON;
+		for(int i = N - 1; i >= 0; --i) {
+			stateTable.get(Lstates[i], scratch);
+			int symbol = 128+(int)word[i];
+			scratch[symbol] = state;
+			state = stateTable.make(scratch);
+		}
+		return state;
+	}
 	
+
 	public int complement(int L) {
 		int length = length(L);
 		IntPairMap G = new IntPairMap();
@@ -148,24 +168,6 @@ public class FlatFsaBytestringSetIndex implements BytestringSetIndex {
 	public BigInteger size(int L) {
 		HashMap<Integer, BigInteger> G = new HashMap<Integer, BigInteger>();
 		return size(G, L);
-	}
-	
-	public int unionSingleton(int L, byte[] word) {
-		final int N = word.length;
-		final int[] Lstates = new int[N];
-		for(int i = 0; i < N; ++i) {
-			Lstates[i] = L;
-			int symbol = 128+(int)word[i];
-			L = stateTable.get(L, symbol);
-		}
-		int state = EPSILON;
-		for(int i = N - 1; i >= 0; --i) {
-			stateTable.get(Lstates[i], scratch);
-			int symbol = 128+(int)word[i];
-			scratch[symbol] = state;
-			state = stateTable.make(scratch);
-		}
-		return state;
 	}
 	
 	private class DataIterator implements Iterator<byte[]> {

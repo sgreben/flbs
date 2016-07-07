@@ -63,7 +63,7 @@ public class FsaBytestringSetIndex implements BytestringSetIndex {
 	public int suffix(int L, byte[] data) {
 		int state = L;
 		for(int i = 0; i < data.length && state != ZERO; ++i) {
-			Residuals R = stateTable.residuals(state);
+			Residuals R = stateTable.get(state);
 			state = R.get(128+(int)data[i]);
 		}
 		return state;
@@ -74,7 +74,7 @@ public class FsaBytestringSetIndex implements BytestringSetIndex {
 			return L == EPSILON;
 		}
 		for(int i = 0; i < data.length; ++i) {
-			L = stateTable.residuals(L).get(128+(int)data[i]);
+			L = stateTable.get(L).get(128+(int)data[i]);
 			if(L == ZERO) {
 				return false;
 			}
@@ -113,7 +113,7 @@ public class FsaBytestringSetIndex implements BytestringSetIndex {
 			if(L == ZERO) {
 				return 0;
 			}
-			Residuals R = stateTable.residuals(L);
+			Residuals R = stateTable.get(L);
 			for(int i = 0; i < 256; ++i) {
 				int Ri = R.get(i);
 				if(Ri != ZERO) {
@@ -157,7 +157,7 @@ public class FsaBytestringSetIndex implements BytestringSetIndex {
 			this.data = new byte[length];
 			this.iterEpsilon = state == EPSILON;
 			if(length > 0) {
-				Residuals R = stateTable.residuals(state);
+				Residuals R = stateTable.get(state);
 				for(int i = 0; i < 256; ++i) {
 					if(R.get(i) != ZERO) {
 						stack.push(new Item(state, 0, i));
@@ -182,7 +182,7 @@ public class FsaBytestringSetIndex implements BytestringSetIndex {
 				int dataIndex = item.dataIndex;
 				int symbol = item.symbol;
 				data[dataIndex] = (byte)(symbol-128);
-				Residuals R = stateTable.residuals(state);
+				Residuals R = stateTable.get(state);
 				for(int i = symbol+1; i < 256; ++i) {
 					if(R.get(i) != ZERO) {
 						item.symbol = i;
@@ -194,7 +194,7 @@ public class FsaBytestringSetIndex implements BytestringSetIndex {
 					return data;
 				}
 				state = R.get(symbol);
-				R = stateTable.residuals(state);
+				R = stateTable.get(state);
 				for(int i = 0; i < 256; ++i) {
 					if(R.get(i) != ZERO) {
 						stack.push(new Item(state, dataIndex+1, i));
@@ -216,7 +216,7 @@ public class FsaBytestringSetIndex implements BytestringSetIndex {
 		if(G.containsKey(Lbox)) {
 			return G.get(Lbox);
 		}
-		Residuals R = stateTable.residuals(L);
+		Residuals R = stateTable.get(L);
 		BigInteger size = BigInteger.ZERO;
 		for(int i = 0; i < 256; ++i) {
 			int Ri = R.get(i);
@@ -242,8 +242,8 @@ public class FsaBytestringSetIndex implements BytestringSetIndex {
 			return ZERO;
 		}
 		int[] residuals = new int[256];
-		Residuals resL = stateTable.residuals(L);
-		Residuals resR = stateTable.residuals(R);
+		Residuals resL = stateTable.get(L);
+		Residuals resR = stateTable.get(R);
 		for(int i = 0; i < 256; ++i) {
 			int succL = resL.get(i);
 			int succR = resR.get(i);
@@ -270,12 +270,12 @@ public class FsaBytestringSetIndex implements BytestringSetIndex {
 		for(int i = 0; i < N; ++i) {
 			Lstates[i] = L;
 			int symbol = 128+(int)word[i];
-			L = stateTable.residuals(L).get(symbol);
+			L = stateTable.get(L).get(symbol);
 		}
 		int state = EPSILON;
 		for(int i = N - 1; i >= 0; --i) {
 			int[] scratch = new int[256];
-			Residuals R = stateTable.residuals(Lstates[i]);
+			Residuals R = stateTable.get(Lstates[i]);
 			for(int j = 0; j < 256; ++j) {
 				 scratch[j] = R.get(j);
 			}
@@ -301,8 +301,8 @@ public class FsaBytestringSetIndex implements BytestringSetIndex {
 			return L;
 		}
 		int[] residuals = new int[256];
-		Residuals resL = stateTable.residuals(L);
-		Residuals resR = stateTable.residuals(R);
+		Residuals resL = stateTable.get(L);
+		Residuals resR = stateTable.get(R);
 		for(int i = 0; i < 256; ++i) {
 			int succL = resL.get(i);
 			int succR = resR.get(i);
@@ -336,7 +336,7 @@ public class FsaBytestringSetIndex implements BytestringSetIndex {
 			return ZERO;
 		}
 		// length >= 1
-		Residuals R = stateTable.residuals(L);
+		Residuals R = stateTable.get(L);
 		int[] Rcomp = new int[256];
 		for(int i = 0; i < 256; ++i) {
 			Rcomp[i] = complement(length - 1, G, R.get(i)); 

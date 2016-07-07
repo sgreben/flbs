@@ -52,7 +52,7 @@ public class LinearScanStateTable implements StateTable {
 		}
 	}
 
-	public Residuals residuals(int state) {
+	public Residuals get(int state) {
 		if(state == ZERO || state == EPSILON) {
 			return ZERO_RESIDUALS;
 		} else {
@@ -63,7 +63,7 @@ public class LinearScanStateTable implements StateTable {
 	private int state(Residuals residuals) {
 		final int N = size();
 		for(int i = 0; i < N; ++i) {
-			if(residuals.equals(residuals(i))) {
+			if(residuals.equals(get(i))) {
 				return i;
 			}
 		}

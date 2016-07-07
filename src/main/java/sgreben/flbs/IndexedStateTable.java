@@ -29,8 +29,8 @@ public class IndexedStateTable implements StateTable {
 		return stateTable.size();
 	}
 	
-	public Residuals residuals(int state) {
-		return stateTable.residuals(state);
+	public Residuals get(int state) {
+		return stateTable.get(state);
 	}
 
 	public int make(Residuals residuals) {

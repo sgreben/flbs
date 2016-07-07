@@ -27,7 +27,7 @@ public abstract class StateTableTest {
 	
 	@Test
 	public void emptyLanguage_R_allSelfLoops() {
-		Residuals R = st.residuals(ZERO);
+		Residuals R = st.get(ZERO);
 		for(int i = 0; i < 256; ++i) {
 			assertEquals(ZERO, R.get(i)); 
 		}
@@ -35,7 +35,7 @@ public abstract class StateTableTest {
 	
 	@Test
 	public void epsilonLanguage_R_allEmptyLanguage() {
-		Residuals R = st.residuals(EPSILON);
+		Residuals R = st.get(EPSILON);
 		for(int i = 0; i < 256; ++i) {
 			assertEquals(ZERO, R.get(i)); 
 		}

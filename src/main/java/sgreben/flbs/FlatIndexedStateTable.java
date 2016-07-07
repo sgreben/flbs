@@ -2,8 +2,7 @@ package sgreben.flbs;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class FlatIndexedStateTable { 
-
+public class FlatIndexedStateTable {
 	public static final int ZERO = Integer.MIN_VALUE;
 	public static final int EPSILON = ZERO + 1;
 	

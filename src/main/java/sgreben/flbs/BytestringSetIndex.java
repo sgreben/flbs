@@ -17,7 +17,7 @@ interface BytestringSetIndex {
 	 */
 	int singleton(byte[] data);
 
-	/** Add a single byte string to a set. 
+	/** Returns the union of a set with a single byte string. 
 		Returns the same state as union(L, singleton(data)), but avoids constructing
 		the intermediate set singleton(data).
 	 */
